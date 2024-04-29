@@ -103,7 +103,6 @@ app.all("/afterLoginSubmit", function (req, res) {
 
   const { ObjectId } = require("mongodb");
 
-  const { ObjectId } = require("mongodb");
 
   app.get("/topic/:topicId", function(req, res) {
     const topicObjectId = req.params.topicId;
