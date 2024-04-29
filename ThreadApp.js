@@ -96,6 +96,33 @@ app.all("/afterLoginSubmit", function (req, res) {
   
     run().catch(console.dir);
   });
+
+
+  app.get("/topic/:topicId", function(req, res) {
+    const topicId = req.params.topicId;
+    const client = new MongoClient(uri);
+  
+    async function run() {
+      try {
+        await client.connect();
+        const database = client.db("MongoTestPub");
+        const topics = database.collection("Topics");
+        
+        const topic = await topics.findOne({_id: new MongoClient.ObjectId(topicId)});
+  
+        if (topic) {
+          res.send(`<h1>${topic.TitleOfTopic}</h1><a href="/afterLoginSubmit">Back to topics</a>`);
+        } else {
+          res.send("Topic not found <br><a href='/afterLoginSubmit'>Back to topics</a>");
+        }
+      } finally {
+        await client.close();
+      }
+    }
+  
+    run().catch(console.dir);
+  });
+  
   
 
 app.all("/register", function (req, res) {
