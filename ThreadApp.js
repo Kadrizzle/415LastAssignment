@@ -24,8 +24,7 @@ app.get("/", function (req, res) {
     var outstring = "<h1>HOMEPAGE</h1>";
     outstring += '<p><a href="./register">Go to register</a></p>';
     outstring += '<p><a href="./login">Go to login</a></p><br><br>';
-    outstring +=
-      '<p><a href="/cookiesCookiesCookies">Click to see all the cookies</a></p>';
+
     res.send(outstring);
   } else {
     // Cookies exist
@@ -51,8 +50,7 @@ app.all("/login", function (req, res) {
   loginString += '<input type="text" id="password" name="password">';
   loginString += '<input type="submit" value="Submit"><br>';
   loginString += '<a href="/">Go back to homepage</a><br><br>';
-  loginString +=
-    '<a href="/cookiesCookiesCookies">Click to see all the cookies</a>';
+
   loginString += "</form>";
   res.send(loginString);
 });
