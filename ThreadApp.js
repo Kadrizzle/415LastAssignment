@@ -140,13 +140,12 @@ app.all("/codingtopicpage", function (req, res) {
   var codingtopicpage = "<h1>Coding Topics</h1>";
   codingtopicpage += "<br>";
   codingtopicpage += "<p>What's a language you would like to learn today?</p>";
-  codingtopicpage += "<img src='https://www.google.com/imgres?q=c%2B%2B%20image&imgurl=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F276452%2Fpexels-photo-276452.jpeg&imgrefurl=https%3A%2F%2Fwww.pexels.com%2Fphoto%2Fcomputer-c-code-276452%2F&docid=tT04H85vNtV0mM&tbnid=Oqp72-z7c53fFM&vet=12ahUKEwiHtsnqwOaFAxXgTTABHT4lAjEQM3oECGQQAA..i&w=1920&h=1024&hcb=2&ved=2ahUKEwiHtsnqwOaFAxXgTTABHT4lAjEQM3oECGQQAA>";
-  codingtopicpage += "<button>Post</button>"; // Add a post button
-  
+  codingtopicpage += "<img src='C:\Users\Matre\Downloads\pexels-pixabay-276452.jpg>";
+
   // Add a div to contain the text box (initially hidden) and the submitted text
   codingtopicpage += "<div id='textBoxDiv' style='display:none;'>";
   codingtopicpage += "<input type='text' id='textBox' placeholder='Enter your text'>";
-  codingtopicpage += "<button onclick='submitText()'>Submit</button>";
+  codingtopicpage += "<button onclick='submitText()'>Post</button>";
   codingtopicpage += "<div id='submittedText'></div>"; // Div to display submitted text
   codingtopicpage += "</div>";
 
