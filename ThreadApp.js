@@ -56,44 +56,48 @@ app.all("/login", function (req, res) {
 });
 
 app.all("/afterLoginSubmit", function (req, res) {
-  const client = new MongoClient(uri);
-  const username = req.body.username;
-  const password = req.body.password;
-
-  async function run() {
-    try {
-      await client.connect();
-      const database = client.db("MongoTestPub");
-      const data = database.collection("Data");
-
-      const cookieHelper = await data.findOne({
-        username: username,
-        password: password,
-      });
-
-      if (cookieHelper) {
-        res.cookie("user", username, { maxAge: 30000, httpOnly: true });
-        res.send(
-          "You are now logged in :)" +
-            '<br><a href="/">Go back to homepage</a><br>'
-        );
-      } else {
-        res.send(
-          "The username or password is wrong. Click the link to go back and try again" +
+    const client = new MongoClient(uri);
+    const username = req.body.username;
+    const password = req.body.password;
+  
+    async function run() {
+      try {
+        await client.connect();
+        const database = client.db("MongoTestPub");
+        const data = database.collection("Data");
+        const topics = database.collection("Topics");
+  
+        const user = await data.findOne({
+          username: username,
+          password: password,
+        });
+  
+        if (user) {
+          const allTopics = await topics.find({}).toArray(); // Fetch all topics
+          let topicsHtml = allTopics.map(topic => `<li><a href="/topic/${topic._id}">${topic.TitleOfTopic}</a></li>`).join('');
+  
+          res.cookie("user", username, { maxAge: 30000, httpOnly: true });
+          res.send(
+            "You are now logged in :) <br>" +
+            `<ul>${topicsHtml}</ul>` +
+            '<p><a href="/">Go back to homepage</a></p>'
+          );
+        } else {
+          res.send(
+            "The username or password is wrong. Click the link to go back and try again" +
             '<a href="/login">Go back to login</a><br><br>' +
             '<a href="/">Click to go back to homepage</a><br><br>'
-
-        );
+          );
+        }
+      } finally {
+        await client.close();
       }
-    } finally {
-      await client.close();
     }
-  }
+  
+    run().catch(console.dir);
+  });
+  
 
-  run().catch(console.dir);
-});
-
-//T2
 app.all("/register", function (req, res) {
   var registerString = '<form action="/afterRegisterSubmit" method="POST">';
   registerString += "<h1>REGISTER</h1>";
