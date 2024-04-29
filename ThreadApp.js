@@ -98,6 +98,8 @@ app.all("/afterLoginSubmit", function (req, res) {
   });
 
 
+  const { ObjectId } = require("mongodb");
+
   app.get("/topic/:topicId", function(req, res) {
     const topicId = req.params.topicId;
     const client = new MongoClient(uri);
@@ -108,13 +110,15 @@ app.all("/afterLoginSubmit", function (req, res) {
         const database = client.db("MongoTestPub");
         const topics = database.collection("Topics");
         
-        const topic = await topics.findOne({_id: new MongoClient.ObjectId(topicId)});
+        const topic = await topics.findOne({_id: ObjectId(topicId)}); // Correct usage here
   
         if (topic) {
           res.send(`<h1>${topic.TitleOfTopic}</h1><a href="/afterLoginSubmit">Back to topics</a>`);
         } else {
           res.send("Topic not found <br><a href='/afterLoginSubmit'>Back to topics</a>");
         }
+      } catch (error) {
+        res.status(500).send("Server error: " + error.message);
       } finally {
         await client.close();
       }
@@ -122,6 +126,7 @@ app.all("/afterLoginSubmit", function (req, res) {
   
     run().catch(console.dir);
   });
+  
   
   
 
