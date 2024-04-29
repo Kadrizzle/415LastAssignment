@@ -40,7 +40,6 @@ app.get("/", function (req, res) {
   }
 });
 
-//T3
 app.all("/login", function (req, res) {
   var loginString = '<form action="/afterLoginSubmit" method="POST">';
   loginString += "<h1>LOGIN</h1>";
@@ -71,24 +70,15 @@ app.all("/afterLoginSubmit", function (req, res) {
           username: username,
           password: password,
         });
-  
-        if (user) {
-          const allTopics = await topics.find({}).toArray(); // Fetch all topics
-          let topicsHtml = allTopics.map(topic => `<li><a href="/topic/${topic._id}">${topic.TitleOfTopic}</a></li>`).join('');
-  
-          res.cookie("user", username, { maxAge: 30000, httpOnly: true });
-          res.send(
-            "You are now logged in :) <br>" +
-            `<ul>${topicsHtml}</ul>` +
-            '<p><a href="/">Go back to homepage</a></p>'
-          );
-        } else {
-          res.send(
-            "The username or password is wrong. Click the link to go back and try again" +
-            '<a href="/login">Go back to login</a><br><br>' +
-            '<a href="/">Click to go back to homepage</a><br><br>'
-          );
-        }
+        const allTopics = await topics.find({}).toArray(); // Fetch all topics
+        let topicsHtml = allTopics.map(topic => `<li><a href="/topic/${topic._id}">${topic.TitleOfTopic}</a></li>`).join('');
+
+        res.cookie("user", username, { maxAge: 30000000000000000000, httpOnly: true });
+        res.send(
+        `Welcome ${username} <br>` +
+        `<ul>${topicsHtml}</ul>` +
+        '<p><a href="/">Go back to homepage</a></p>'
+        );
       } finally {
         await client.close();
       }
