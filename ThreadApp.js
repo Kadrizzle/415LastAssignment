@@ -103,8 +103,10 @@ app.all("/afterLoginSubmit", function (req, res) {
 
   const { ObjectId } = require("mongodb");
 
+  const { ObjectId } = require("mongodb");
+
   app.get("/topic/:topicId", function(req, res) {
-    const topicId = req.params.topicId;
+    const topicObjectId = req.params.topicId;
     const client = new MongoClient(uri);
   
     async function run() {
@@ -112,15 +114,25 @@ app.all("/afterLoginSubmit", function (req, res) {
         await client.connect();
         const database = client.db("MongoTestPub");
         const topics = database.collection("Topics");
+        const topicMessages = database.collection("TopicMessages");
         
-        const topic = await topics.findOne({_id: new ObjectId(topicId)}); // Correct usage here
-  
-        if (topic) {
-          res.send(`<h1>${topic.TitleOfTopic}</h1><a href="/afterLoginSubmit">Back to topics</a>`);
-        } else {
+        // Ensure we convert topicObjectId to an ObjectId
+        const topic = await topics.findOne({_id: new ObjectId(topicObjectId)}); 
+        if (!topic) {
           res.send("Topic not found <br><a href='/afterLoginSubmit'>Back to topics</a>");
+          return;
         }
+  
+        // Fetch messages that match the topicId
+        const allTopicMessages = await topicMessages.find({ TopicId: new ObjectId(topicObjectId) }).toArray();
+        let topicMessagesHtml = allTopicMessages.map(topicMessage => `<p>${topicMessage.Message}</p>`).join('');
+    
+        // Display the topic and its messages
+        res.send(`<h1>${topic.TitleOfTopic}</h1>
+                  ${topicMessagesHtml}
+                  <p><a href="/afterLoginSubmit">Back to topics</a></p>`);
       } catch (error) {
+        console.error("Failed during topic detail fetch", error);
         res.status(500).send("Server error: " + error.message);
       } finally {
         await client.close();
@@ -129,6 +141,7 @@ app.all("/afterLoginSubmit", function (req, res) {
   
     run().catch(console.dir);
   });
+  
   
   
   
