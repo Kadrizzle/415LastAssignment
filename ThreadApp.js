@@ -172,8 +172,8 @@ app.all("/codingtopicpage", function (req, res) {
   codingtopicpage += "<br>";
   codingtopicpage += "<p>What's a language you would like to learn today?</p>";
   codingtopicpage += "<img src='https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' style='max-width: 50%;'>"; 
-  codingtopicpage +="<br>"
-  codingtopicpage +="<br>"
+  codingtopicpage += "<br>"
+  codingtopicpage += "<br>"
 
   codingtopicpage +="<button onclick='showTextBox()'>Post</button>"; 
   codingtopicpage += "<div id='textBoxDiv' style='display:none;'>";
@@ -184,16 +184,45 @@ app.all("/codingtopicpage", function (req, res) {
 
   codingtopicpage += "<script>";
   codingtopicpage += "function showTextBox() {";
-  codingtopicpage += "  document.getElementById('textBoxDiv').style.display = 'block';";
+  codingtopicpage += "document.getElementById('textBoxDiv').style.display = 'block';";
   codingtopicpage += "}";
   codingtopicpage += "function submitText() {";
-  codingtopicpage += "  var submittedText = document.getElementById('textBox').value;";
-  codingtopicpage += "  var submittedTextDiv = document.getElementById('submittedText');";
-  codingtopicpage += "  submittedTextDiv.innerHTML += '<p>' + submittedText + '</p>';";
+  codingtopicpage += "var submittedText = document.getElementById('textBox').value;";
+  codingtopicpage += "var submittedTextDiv = document.getElementById('submittedText');";
+  codingtopicpage += "submittedTextDiv.innerHTML += '<p>' + submittedText + '</p>';";
   codingtopicpage += "}";
   codingtopicpage += "</script>";
 
   res.send(codingtopicpage);
+});
+
+app.all("/dogs", function (req, res) {
+  var dogs = "<h1>Dogs</h1>";
+  dogs += "<br>";
+  dogs += "<p>What's your favorite type of dog?</p>";
+  dogs += "<img src='https://www.hartz.com/wp-content/uploads/2020/03/3270011244_Hartz_Disposable_Dog_Diapers_large_dogs_1300x1300.jpg' style='max-width: 50%;'>"; 
+  dogs += "<br>"
+  dogs += "<br>"
+
+  dogs +="<button onclick='showTextBox()'>Post</button>"; 
+  dogs += "<div id='textBoxDiv' style='display:none;'>";
+  dogs += "<input type='text' id='textBox' placeholder='Enter your text'>";
+  dogs += "<button onclick='submitText()'>Submit</button>";
+  dogs += "<div id='submittedText'></div>"; 
+  dogs += "</div>";
+
+  dogs += "<script>";
+  dogs += "function showTextBox() {";
+  dogs += "document.getElementById('textBoxDiv').style.display = 'block';";
+  dogs += "}";
+  dogs += "function submitText() {";
+  dogs += "var submittedText = document.getElementById('textBox').value;";
+  dogs += "var submittedTextDiv = document.getElementById('submittedText');";
+  dogs += "submittedTextDiv.innerHTML += '<p>' + submittedText + '</p>';";
+  dogs += "}";
+  dogs += "</script>";
+
+  res.send(dogs);
 });
 
 
