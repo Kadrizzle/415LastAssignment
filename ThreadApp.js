@@ -144,17 +144,21 @@ app.all("/codingtopicpage", function (req, res) {
   var codingtopicpage = "<h1>Coding Topics</h1>";
   codingtopicpage += "<br>";
   codingtopicpage += "<p>What's a language you would like to learn today?</p>";
-  codingtopicpage += "<img src='https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg'>";
+  codingtopicpage += "<img src='https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' style='max-width: 50%;'>"; // Set max-width to make the photo smaller
+
+  // Add the post button without functionality
+  codingtopicpage += "<button onclick=''>Post</button>";
 
   // Add a div to contain the text box (initially hidden) and the submitted text
   codingtopicpage += "<div id='textBoxDiv' style='display:none;'>";
   codingtopicpage += "<input type='text' id='textBox' placeholder='Enter your text'>";
-  codingtopicpage += "<button onclick='submitText()'>Post</button>";
+  codingtopicpage += "<button onclick='submitText()'>Submit</button>";
   codingtopicpage += "<div id='submittedText'></div>"; // Div to display submitted text
   codingtopicpage += "</div>";
 
   res.send(codingtopicpage);
 });
+
 
 
 
