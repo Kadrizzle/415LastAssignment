@@ -146,8 +146,8 @@ app.all("/codingtopicpage", function (req, res) {
   codingtopicpage += "<p>What's a language you would like to learn today?</p>";
   codingtopicpage += "<img src='https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' style='max-width: 50%;'>"; // Set max-width to make the photo smaller
 
-  // Add the post button without functionality
-  codingtopicpage += "<button onclick=''>Post</button>";
+  codingtopicpage +="<br>"
+  codingtopicpage +="<button onclick=''>Post</button>";
 
   // Add a div to contain the text box (initially hidden) and the submitted text
   codingtopicpage += "<div id='textBoxDiv' style='display:none;'>";
