@@ -140,7 +140,7 @@ app.all("/codingtopicpage", function (req, res) {
   var codingtopicpage = "<h1>Coding Topics</h1>";
   codingtopicpage += "<br>";
   codingtopicpage += "<p>What's a language you would like to learn today?</p>";
-  codingtopicpage += "<img src='C:\Users\Matre\Downloads\pexels-pixabay-276452.jpg>";
+  codingtopicpage += "<img src='file:///C:/Users/Matre/Downloads/pexels-pixabay-276452.jpg' alt='C++ code'>";
 
   // Add a div to contain the text box (initially hidden) and the submitted text
   codingtopicpage += "<div id='textBoxDiv' style='display:none;'>";
