@@ -65,27 +65,40 @@ app.all("/afterLoginSubmit", function (req, res) {
         const database = client.db("MongoTestPub");
         const data = database.collection("Data");
         const topics = database.collection("Topics");
-  
+
         const user = await data.findOne({
           username: username,
           password: password,
         });
+
+        if (!user) {
+          res.status(401).send("Unauthorized: Username or password is incorrect");
+          return;
+        }
+
         const allTopics = await topics.find({}).toArray(); // Fetch all topics
         let topicsHtml = allTopics.map(topic => `<li><a href="/topic/${topic._id}">${topic.TitleOfTopic}</a></li>`).join('');
 
-        res.cookie("user", username, { maxAge: 30000000000000000000, httpOnly: true });
+        res.cookie("user", username, { maxAge: 86400000, httpOnly: true });
         res.send(
-        `Welcome ${username} <br>` +
-        `<ul>${topicsHtml}</ul>` +
-        '<p><a href="/">Go back to homepage</a></p>'
+          `Welcome ${username} <br>` +
+          `<ul>${topicsHtml}</ul>` +
+          '<p><a href="/">Go back to homepage</a></p>'
         );
+      } catch (error) {
+        console.error("Error during database operation", error);
+        res.status(500).send("Internal Server Error: " + error.message);
       } finally {
         await client.close();
       }
     }
   
-    run().catch(console.dir);
-  });
+    run().catch(error => {
+      console.error("Failed to run the server process", error);
+      res.status(500).send("Internal Server Error: " + error.message);
+    });
+});
+
 
 
   const { ObjectId } = require("mongodb");
