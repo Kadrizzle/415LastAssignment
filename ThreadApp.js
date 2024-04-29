@@ -147,7 +147,8 @@ app.all("/codingtopicpage", function (req, res) {
   codingtopicpage += "<img src='https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' style='max-width: 50%;'>"; // Set max-width to make the photo smaller
 
   codingtopicpage +="<br>"
-  codingtopicpage +="<button onclick=''>Post</button>";
+  codingtopicpage +="<br>"
+  codingtopicpage +="<button onclick='showTextBox()'>Post</button>"; // Button to show the text box
 
   // Add a div to contain the text box (initially hidden) and the submitted text
   codingtopicpage += "<div id='textBoxDiv' style='display:none;'>";
@@ -155,6 +156,18 @@ app.all("/codingtopicpage", function (req, res) {
   codingtopicpage += "<button onclick='submitText()'>Submit</button>";
   codingtopicpage += "<div id='submittedText'></div>"; // Div to display submitted text
   codingtopicpage += "</div>";
+
+  // JavaScript functions to show/hide the text box and handle text submission
+  codingtopicpage += "<script>";
+  codingtopicpage += "function showTextBox() {";
+  codingtopicpage += "  document.getElementById('textBoxDiv').style.display = 'block';";
+  codingtopicpage += "}";
+  codingtopicpage += "function submitText() {";
+  codingtopicpage += "  var submittedText = document.getElementById('textBox').value;";
+  codingtopicpage += "  var submittedTextDiv = document.getElementById('submittedText');";
+  codingtopicpage += "  submittedTextDiv.innerHTML += '<p>' + submittedText + '</p>';"; // Append submitted text
+  codingtopicpage += "}";
+  codingtopicpage += "</script>";
 
   res.send(codingtopicpage);
 });
