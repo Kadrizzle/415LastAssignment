@@ -106,8 +106,6 @@ app.all("/register", function (req, res) {
   registerString += '<input type="text" id="password" name="password">';
   registerString += '<input type="submit" value="Submit"><br>';
   registerString += '<a href="/">Go back to homepage</a>';
-  registerString +=
-    '<a href="/cookiesCookiesCookies">Click to see all the cookies</a>';
 
   registerString += "</form>";
   res.send(registerString);
