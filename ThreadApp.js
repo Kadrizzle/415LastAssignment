@@ -71,21 +71,18 @@ app.all("/afterLoginSubmit", function (req, res) {
         password: password,
       });
 
-      //T3.2
       if (cookieHelper) {
         res.cookie("user", username, { maxAge: 30000, httpOnly: true });
         res.send(
           "You are now logged in :)" +
-            '<br><a href="/">Go back to homepage</a><br>' +
-            '<a href="/cookiesCookiesCookies">Click to see all the cookies</a>'
+            '<br><a href="/">Go back to homepage</a><br>'
         );
-        //T3.1
       } else {
         res.send(
           "The username or password is wrong. Click the link to go back and try again" +
             '<a href="/login">Go back to login</a><br><br>' +
-            '<a href="/">Click to go back to homepage</a><br><br>' +
-            '<a href="/cookiesCookiesCookies">Click to see all the cookies</a>'
+            '<a href="/">Click to go back to homepage</a><br><br>'
+
         );
       }
     } finally {
@@ -115,8 +112,6 @@ app.all("/afterRegisterSubmit", function (req, res) {
   const client = new MongoClient(uri);
   var databaseString = "<p>You are now registered into the database!</p>";
   databaseString += '<a href="/">Go back to homepage</a>';
-  databaseString +=
-    '<a href="/cookiesCookiesCookies">Click to see all the cookies</a>';
   res.send(databaseString);
   const username = req.body.username;
   const password = req.body.password;
@@ -141,57 +136,11 @@ app.all("/afterRegisterSubmit", function (req, res) {
   run().catch(console.dir);
 });
 
-//T4
-app.all("/cookiesCookiesCookies", function (req, res) {
-  const mycookies = req.cookies;
-  const cookieString =
-    JSON.stringify(mycookies) +
-    '<br><br><a href="/terminateCookies">Click to go to the cookie termination page</a><br><br>';
-  res.send(cookieString);
-});
 
-//T5
-app.all("/terminateCookies", function (req, res) {
-  if (req.cookies) {
-    for (var cookie in req.cookies) {
-      res.clearCookie(cookie);
-    }
-  }
-  res.send(
-    '<a href="/cookiesCookiesCookies">Click here to see all the cookies</a><br><br><a href="/">Click here to go to the homepage</a>'
-  );
-});
 
-// Access Example-2
-// Route to access database using two parameters:
-app.get("/api/mongo2/:inpkey&:item", function (req, res) {
-  // access as ...app.github.dev/api/mongo2/partID&12345
-  console.log("inpkey: " + req.params.inpkey + " item: " + req.params.item);
 
-  const client = new MongoClient(uri);
 
-  async function run() {
-    try {
-      const database = client.db("ckmdb");
-      const where2look = database.collection("cmps415");
 
-      // Here we will make a query object using the parameters provided with the route
-      // as they key:value pairs
-      const query = {};
-      query[req.params.inpkey] = req.params.item;
-
-      console.log("Looking for: " + JSON.stringify(query));
-
-      const part = await where2look.findOne(query);
-      console.log("Found this entry: ", part);
-      res.send("Found this: " + JSON.stringify(part)); //Use stringify to print a json
-    } finally {
-      // Ensures that the client will close when you finish/error
-      await client.close();
-    }
-  }
-  run().catch(console.dir);
-});
 
 // Route to write to the database:
 // Access like this:  https://.....app.github.dev/api/mongowrite/partID&54321
