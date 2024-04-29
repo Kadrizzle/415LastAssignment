@@ -110,7 +110,7 @@ app.all("/afterLoginSubmit", function (req, res) {
         const database = client.db("MongoTestPub");
         const topics = database.collection("Topics");
         
-        const topic = await topics.findOne({_id: ObjectId(topicId)}); // Correct usage here
+        const topic = await topics.findOne({_id: new ObjectId(topicId)}); // Correct usage here
   
         if (topic) {
           res.send(`<h1>${topic.TitleOfTopic}</h1><a href="/afterLoginSubmit">Back to topics</a>`);
