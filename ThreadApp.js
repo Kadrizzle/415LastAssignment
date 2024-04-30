@@ -47,7 +47,7 @@ app.all("/login", function (req, res) {
   loginString += '<input type="text" id="username" name="username"><br>';
   loginString += "<label>Password: </label>";
   loginString += '<input type="text" id="password" name="password">';
-  loginString += '<input type="submit" value="Submit"><br>';
+  loginString += '<br><input type="submit" value="Submit"><br>';
   loginString += '<a href="/">Go back to homepage</a><br><br>';
   loginString += "</form>";
   
