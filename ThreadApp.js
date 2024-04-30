@@ -159,7 +159,7 @@ app.all("/topic/:topicId/messageSubmit", function(res, req){
     }
   }
   run().catch(console.dir);
-  res.redirect("/topic/${topicObjectId}");
+  // res.redirect("/topic/${topicObjectId}");
 });
   
   
