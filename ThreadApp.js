@@ -122,9 +122,9 @@ app.all("/afterLoginSubmit", function (req, res) {
         // Display the topic and its messages
 
 
-        const topicPageContent = `<h1>${topic.TitleOfTopic}</h1>`;
+        var topicPageContent = `<h1>${topic.TitleOfTopic}</h1>`;
         topicPageContent += `${topicMessagesHtml}`;
-        topicPageContent +="<button onclick='showTextBox()'>Post</button>"; 
+        topicPageContent += "<button onclick='showTextBox()'>Post</button>"; 
         topicPageContent += "<div id='textBoxDiv' style='display:none;'>";
         topicPageContent += "<input type='text' id='textBox' placeholder='Enter your text'>";
         topicPageContent += "<button onclick='submitText()'>Submit</button>";
