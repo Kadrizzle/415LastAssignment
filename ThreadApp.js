@@ -77,7 +77,7 @@ app.all("/afterLoginSubmit", function (req, res) {
               <h1>${topic.TitleOfTopic} Topic</h1>
               <div style="margin-bottom: 20px;">
                   <a href="/topic/${topic._id}">
-                  <img src="${topic.TitleOfTopic === 'Coding' ? 'https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' : 'https://www.hartz.com/wp-content/uploads/2020/03/3270011244_Hartz_Disposable_Dog_Diapers_large_dogs_1300x1300.jpg'}" alt="${topic.TitleOfTopic}" style="max-width: 30%; height: auto; margin-right: 20px;">
+                  <img src="${topic.TitleOfTopic === 'Coding' ? 'https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' : 'https://www.hartz.com/wp-content/uploads/2020/03/3270011244_Hartz_Disposable_Dog_Diapers_large_dogs_1300x1300.jpg'}" alt="${topic.TitleOfTopic}" style="max-width: 20%; height: auto; margin-right: 20px;">
                   </a>
               </div>
           `).join('');
@@ -86,7 +86,8 @@ app.all("/afterLoginSubmit", function (req, res) {
           res.send(
               `<h1>Welcome ${username}</h1>` +
               `${topicsHtml}` +
-              '<p><a href="/">Go back to homepage</a></p>'
+              '<p style="text-align: center;"><a href="/" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Go back to homepage</a></p>'
+
           );
       } catch (error) {
           console.error("Error during database operation", error);
