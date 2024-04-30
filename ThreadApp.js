@@ -128,8 +128,8 @@ app.all("/afterLoginSubmit", function (req, res) {
         topicPageContent += `</div>`;
         topicPageContent += `<div id="textBoxDiv" style="display:none; text-align:center; margin:20px;">`;
         topicPageContent += `<input type='text' id='textBox' placeholder='Enter something to post on the forum' style="padding:5px; width:50%; font-size:30px;">`;
-        topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
         topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="submitText()">Submit</button>`;
+        topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
         topicPageContent += `<div id="submittedText" style="margin-top:20px;"></div>`;
         topicPageContent += `</div>`;
         
