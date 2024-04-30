@@ -133,21 +133,20 @@ app.all("/afterLoginSubmit", function (req, res) {
         topicPageContent += `<div id="submittedText" style="margin-top:20px;"></div>`;
         topicPageContent += `</div>`;
         
-        topicPageContent += `<script>`;
-        topicPageContent += `function showTextBox() {`;
-        topicPageContent += `  document.getElementById('textBoxDiv').style.display = 'block';`;
-        topicPageContent += `}`;
-        topicPageContent += `function submitText() {`;
-        topicPageContent += `  var submittedText = document.getElementById('textBox').value;`;
-        topicPageContent += `  var submittedTextDiv = document.getElementById('submittedText');`;
-        topicPageContent += `  if (submittedText.trim() !== '') {`;
-        topicPageContent += `    submittedTextDiv.innerHTML += '<p style="text-align:left;">' + submittedText + '</p>';`;
-        topicPageContent += `    document.getElementById('textBox').value = '';`; // Clear input after submit
-        topicPageContent += `  }`;
-        topicPageContent += `}`;
-        topicPageContent += `</script>`;
+        topicPageContent += "<script>";
+        topicPageContent += "function showTextBox() {";
+        topicPageContent += "document.getElementById('textBoxDiv').style.display = 'block';";
+        topicPageContent += "}";
+        topicPageContent += "function submitText() {";
+        topicPageContent += "var submittedText = document.getElementById('textBox').value;";
+        topicPageContent += "var submittedTextDiv = document.getElementById('submittedText');";
+        topicPageContent += "submittedTextDiv.innerHTML += '<p style=\"font-size: 20px; margin: 5px 0;\">' + submittedText + '</p>';";  // Increased font size here
+        topicPageContent += "}";
+        topicPageContent += "</script>";
         
-        topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="font-size:16px;">Back to topics</a></p>`;
+        
+        topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="background-color: #4CAF50; color: white; padding: 15px 30px; text-align: center; text-decoration: none; display: inline-block; font-size: 20px; border-radius: 5px; cursor: pointer;">Back to topics</a></p>`;
+
         
 
         res.send(topicPageContent);
