@@ -124,7 +124,7 @@ app.all("/afterLoginSubmit", function (req, res) {
                   ${topicMessagesHtml}
                   <form action="/topic/${topicObjectId}/messageSubmit" method="POST">
                      <input type="text" name="message" placeholder="Type something to put on the forum!" required>
-                     <button type="submit">POST</submit>
+                     <button type="submit">POST</button>
                   </form>
                   <p><a href="/afterLoginSubmit">Back to topics</a></p>`);
       } catch (error) {
