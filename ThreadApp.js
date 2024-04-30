@@ -82,12 +82,15 @@ app.all("/afterLoginSubmit", function (req, res) {
           `).join('');
 
           const addTopicForm = `
+          <div style="text-align: center;">
               <h2>Add a New Topic</h2>
-              <form action="/addTopic" method="POST">
-                  <input type="text" name="TitleOfTopic" placeholder="Enter new topic title" required>
-                  <input type="submit" value="Add Topic">
+              <form action="/addTopic" method="POST" style="display: inline-block;">
+                  <input type="text" name="TitleOfTopic" placeholder="Enter new topic title" style="padding: 10px; width: 300px; font-size: 16px;" required>
+                  <input type="submit" value="Add Topic" style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
               </form>
-          `;
+          </div>
+      `;
+      
 
           res.cookie("user", username, { maxAge: 86400000, httpOnly: true });
           res.send(
