@@ -34,7 +34,14 @@ app.get("/", function (req, res) {
 });
 
 app.all("/login", function (req, res) {
-  var loginString = '<form action="/afterLoginSubmit" method="POST">';
+  var loginString = '<style>';
+  loginString += 'body { font-size: 18px; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; }';
+  loginString += 'form { text-align: center; }';
+  loginString += 'input[type="text"], input[type="submit"] { margin-top: 10px; padding: 10px; width: 200px; font-size: 16px; }';
+  loginString += 'a { display: inline-block; margin-top: 20px; font-size: 16px; }';
+  loginString += '</style>';
+  
+  loginString += '<form action="/afterLoginSubmit" method="POST">';
   loginString += "<h1>LOGIN</h1>";
   loginString += "<label>Username: </label>";
   loginString += '<input type="text" id="username" name="username"><br>';
@@ -42,8 +49,8 @@ app.all("/login", function (req, res) {
   loginString += '<input type="text" id="password" name="password">';
   loginString += '<input type="submit" value="Submit"><br>';
   loginString += '<a href="/">Go back to homepage</a><br><br>';
-
   loginString += "</form>";
+  
   res.send(loginString);
 });
 
