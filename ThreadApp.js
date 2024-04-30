@@ -122,26 +122,33 @@ app.all("/afterLoginSubmit", function (req, res) {
         // Display the topic and its messages
 
 
-        var topicPageContent = `<h1>${topic.TitleOfTopic}</h1>`;
-        topicPageContent += `${topicMessagesHtml}`;
-        topicPageContent += "<button onclick='showTextBox()'>Post</button>"; 
-        topicPageContent += "<div id='textBoxDiv' style='display:none;'>";
-        topicPageContent += "<input type='text' id='textBox' placeholder='Enter your text'>";
-        topicPageContent += "<button onclick='submitText()'>Submit</button>";
-        topicPageContent += "<div id='submittedText'></div>"; 
-        topicPageContent += "</div>";
-                
-        topicPageContent += "<script>";
-        topicPageContent += "function showTextBox() {";
-        topicPageContent += "document.getElementById('textBoxDiv').style.display = 'block';";
-        topicPageContent += "}";
-        topicPageContent += "function submitText() {";
-        topicPageContent += "var submittedText = document.getElementById('textBox').value;";
-        topicPageContent += "var submittedTextDiv = document.getElementById('submittedText');";
-        topicPageContent += "submittedTextDiv.innerHTML += '<p>' + submittedText + '</p>';";
-        topicPageContent += "}";
-        topicPageContent += "</script>";
-        topicPageContent += `<p><a href="/afterLoginSubmit">Back to topics</a></p>`;
+        var topicPageContent = `<h1 style="text-align:center; font-size:24px;">${topic.TitleOfTopic}</h1>`;
+        topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
+        topicPageContent += `<div style="text-align:center; margin:20px;">`;
+        topicPageContent += `<button style="padding:10px 20px; font-size:16px;" onclick="showTextBox()">Post</button>`;
+        topicPageContent += `</div>`;
+        topicPageContent += `<div id="textBoxDiv" style="display:none; text-align:center; margin:20px;">`;
+        topicPageContent += `<input type='text' id='textBox' placeholder='Enter your text' style="padding:5px; width:50%; font-size:16px;">`;
+        topicPageContent += `<button style="padding:10px 20px; font-size:16px;" onclick="submitText()">Submit</button>`;
+        topicPageContent += `<div id="submittedText" style="margin-top:20px;"></div>`;
+        topicPageContent += `</div>`;
+        
+        topicPageContent += `<script>`;
+        topicPageContent += `function showTextBox() {`;
+        topicPageContent += `  document.getElementById('textBoxDiv').style.display = 'block';`;
+        topicPageContent += `}`;
+        topicPageContent += `function submitText() {`;
+        topicPageContent += `  var submittedText = document.getElementById('textBox').value;`;
+        topicPageContent += `  var submittedTextDiv = document.getElementById('submittedText');`;
+        topicPageContent += `  if (submittedText.trim() !== '') {`;
+        topicPageContent += `    submittedTextDiv.innerHTML += '<p style="text-align:left;">' + submittedText + '</p>';`;
+        topicPageContent += `    document.getElementById('textBox').value = '';`; // Clear input after submit
+        topicPageContent += `  }`;
+        topicPageContent += `}`;
+        topicPageContent += `</script>`;
+        
+        topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="font-size:16px;">Back to topics</a></p>`;
+        
 
         res.send(topicPageContent);
 
