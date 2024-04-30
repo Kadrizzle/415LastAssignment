@@ -30,17 +30,12 @@ class Database {
 }
 
 class Observer {
-  notify(data) {
-    this.Observer.forEach((observer) => observer(data));
-  }
+  notify() {}
 }
 
 class Topic {
   constructor() {
     this.observers = [];
-  }
-  notify(data) {
-    this.observers.forEach((observer) => observer(data));
   }
 
   addObserver(observer) {
@@ -255,7 +250,7 @@ app.get("/topic/:topicId", function (req, res) {
 
       topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="background-color: #4CAF50; color: white; padding: 15px 30px; text-align: center; text-decoration: none; display: inline-block; font-size: 20px; border-radius: 5px; cursor: pointer;">Back to topics</a></p>`;
 
-      topicObserver.notify("user is now on topic page");
+      topicObserver.notify();
 
       res.send(topicPageContent);
     } catch (error) {
