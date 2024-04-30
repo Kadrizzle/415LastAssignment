@@ -29,7 +29,35 @@ class Database {
   }
 }
 
+class Observer {
+  notify() {} 
+}
+
+
+class Topic {
+  constructor() {
+    this.observers = [];
+  }
+
+
+  addObserver(observer) {
+    this.observers.push(observer);
+  }
+
+  removeObserver(observer) {
+    this.observers = this.observers.filter(obs => obs !== observer);
+  }
+
+  notifyObservers() {
+    this.observers.forEach(observer => observer.notify());
+  }
+}
+
 const databaseInstance = new Database();
+
+const topicObserver = new Observer();
+const topicInstance = new Topic();
+topicInstance.addObserver(topicObserver);
 
 const app = express();
 const port = 3000;
@@ -199,6 +227,8 @@ app.get("/topic/:topicId", function(req, res) {
 
       topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="background-color: #4CAF50; color: white; padding: 15px 30px; text-align: center; text-decoration: none; display: inline-block; font-size: 20px; border-radius: 5px; cursor: pointer;">Back to topics</a></p>`;
       
+      topicObserver.notify();
+
       res.send(topicPageContent);
     } catch (error) {
       console.error("Failed during topic detail fetch", error);
