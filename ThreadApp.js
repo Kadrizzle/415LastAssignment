@@ -64,10 +64,6 @@ app.all("/afterLoginSubmit", function (req, res) {
               password: password,
           });
 
-          if (!user) {
-              res.status(401).send("Unauthorized: Username or password is incorrect");
-              return;
-          }
 
           const allTopics = await topics.find({}).toArray(); // Fetch all topics
           let topicsHtml = allTopics.map(topic => `
@@ -127,12 +123,12 @@ app.all("/afterLoginSubmit", function (req, res) {
 
 
         var topicPageContent = `<h1 style="text-align:center; font-size:50px;">${topic.TitleOfTopic}</h1>`;
-        topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
         topicPageContent += `<div style="text-align:center; margin:20px;">`;
         topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="showTextBox()">Post</button>`;
         topicPageContent += `</div>`;
         topicPageContent += `<div id="textBoxDiv" style="display:none; text-align:center; margin:20px;">`;
-        topicPageContent += `<input type='text' id='textBox' placeholder='Enter your text' style="padding:5px; width:50%; font-size:30px;">`;
+        topicPageContent += `<input type='text' id='textBox' placeholder='Enter something to post on the forum' style="padding:5px; width:50%; font-size:30px;">`;
+        topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
         topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="submitText()">Submit</button>`;
         topicPageContent += `<div id="submittedText" style="margin-top:20px;"></div>`;
         topicPageContent += `</div>`;
