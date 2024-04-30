@@ -1,17 +1,41 @@
 const { MongoClient } = require("mongodb");
-
-
-const uri =
-  "mongodb+srv://Kadazzle:kadizzleinthehizzle@cluster0.xgaaecl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-// --- This is the standard stuff to get it to work on the browser
 const express = require("express");
-const app = express();
-const port = 3000;
 const cookieParser = require("cookie-parser");
 const session = require('express-session');
-app.listen(port);
-console.log("Server started at http://localhost:" + port);
+
+const uri = "mongodb+srv://Kadazzle:kadizzleinthehizzle@cluster0.xgaaecl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+class Database {
+  constructor() {
+    if (!Database.instance) {
+      this.client = new MongoClient(uri);
+      Database.instance = this;
+    }
+    return Database.instance;
+  }
+
+  async connect() {
+    try {
+      await this.client.connect();
+      console.log("Connected to MongoDB Atlas");
+    } catch (error) {
+      console.error("Error connecting to MongoDB Atlas", error);
+    }
+  }
+
+  getClient() {
+    return this.client;
+  }
+}
+
+const databaseInstance = new Database();
+
+const app = express();
+const port = 3000;
+
+app.listen(port, () => {
+  console.log(`Server started at http://localhost:${port}`);
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,7 +54,6 @@ app.get("/", function (req, res) {
   outstring += '<p><a href="./login">Go to login</a></p><br><br>';
 
   res.send(outstring);
-
 });
 
 app.all("/login", function (req, res) {
@@ -55,157 +78,140 @@ app.all("/login", function (req, res) {
 });
 
 app.all("/afterLoginSubmit", function (req, res) {
-  const client = new MongoClient(uri);
   const username = req.body.username;
   const password = req.body.password;
+  const client = databaseInstance.getClient();
 
   async function run() {
-      try {
-          await client.connect();
-          const database = client.db("MongoTestPub");
-          const data = database.collection("Data");
-          const topics = database.collection("Topics");
+    try {
+      await client.connect();
+      const database = client.db("MongoTestPub");
+      const data = database.collection("Data");
+      const topics = database.collection("Topics");
 
-          const user = await data.findOne({
-              username: username,
-              password: password,
-          });
+      const user = await data.findOne({
+        username: username,
+        password: password,
+      });
 
-          const allTopics = await topics.find({}).toArray(); // Fetch all topics
-          let topicsHtml = allTopics.map(topic => `
-              <h1>${topic.TitleOfTopic} Topic</h1>
-              <div style="margin-bottom: 20px;">
-                  <a href="/topic/${topic._id}">
-                  <img src="${topic.TitleOfTopic === 'Coding' ? 'https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' : 'https://www.hartz.com/wp-content/uploads/2020/03/3270011244_Hartz_Disposable_Dog_Diapers_large_dogs_1300x1300.jpg'}" alt="${topic.TitleOfTopic}" style="max-width: 20%; height: auto; margin-right: 20px;">
-                  </a>
-              </div>
-          `).join('');
-
-          const addTopicForm = `
-          <div style="text-align: center;">
-              <h2>Add a New Topic</h2>
-              <form action="/addTopic" method="POST" style="display: inline-block;">
-                  <input type="text" name="TitleOfTopic" placeholder="Enter new topic title" style="padding: 10px; width: 300px; font-size: 16px;" required>
-                  <input type="submit" value="Add Topic" style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
-              </form>
+      const allTopics = await topics.find({}).toArray(); // Fetch all topics
+      let topicsHtml = allTopics.map(topic => `
+          <h1>${topic.TitleOfTopic} Topic</h1>
+          <div style="margin-bottom: 20px;">
+              <a href="/topic/${topic._id}">
+              <img src="${topic.TitleOfTopic === 'Coding' ? 'https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' : 'https://www.hartz.com/wp-content/uploads/2020/03/3270011244_Hartz_Disposable_Dog_Diapers_large_dogs_1300x1300.jpg'}" alt="${topic.TitleOfTopic}" style="max-width: 20%; height: auto; margin-right: 20px;">
+              </a>
           </div>
-      `;
-      
+      `).join('');
 
-          res.cookie("user", username, { maxAge: 86400000, httpOnly: true });
-          res.send(
-              `<h1>Welcome ${username}</h1>` +
-              `${topicsHtml}` +
-              `${addTopicForm}` +
-              '<p style="text-align: center;"><a href="/" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Go back to homepage</a></p>'
-          );
-      } catch (error) {
-          console.error("Error during database operation", error);
-          res.status(500).send("Internal Server Error: " + error.message);
-      } finally {
-          await client.close();
-      }
+      const addTopicForm = `
+      <div style="text-align: center;">
+          <h2>Add a New Topic</h2>
+          <form action="/addTopic" method="POST" style="display: inline-block;">
+              <input type="text" name="TitleOfTopic" placeholder="Enter new topic title" style="padding: 10px; width: 300px; font-size: 16px;" required>
+              <input type="submit" value="Add Topic" style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
+          </form>
+      </div>
+  `;
+
+      res.cookie("user", username, { maxAge: 86400000, httpOnly: true });
+      res.send(
+          `<h1>Welcome ${username}</h1>` +
+          `${topicsHtml}` +
+          `${addTopicForm}` +
+          '<p style="text-align: center;"><a href="/" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Go back to homepage</a></p>'
+      );
+    } catch (error) {
+        console.error("Error during database operation", error);
+        res.status(500).send("Internal Server Error: " + error.message);
+    }
   }
 
   run().catch(console.dir);
 });
 
 app.post("/addTopic", function (req, res) {
-  const client = new MongoClient(uri);
   const newTopicTitle = req.body.TitleOfTopic;
+  const client = databaseInstance.getClient();
 
   async function run() {
-      try {
-          await client.connect();
-          const database = client.db("MongoTestPub");
-          const topics = database.collection("Topics");
+    try {
+      const database = client.db("MongoTestPub");
+      const topics = database.collection("Topics");
 
-          // Insert the new topic into the database
-          await topics.insertOne({ TitleOfTopic: newTopicTitle });
-          res.redirect("/afterLoginSubmit"); // Redirect back to the topics page
-      } catch (error) {
-          console.error("Failed to add new topic", error);
-          res.status(500).send("Error adding new topic");
-      } finally {
-          await client.close();
-      }
+      // Insert the new topic into the database
+      await topics.insertOne({ TitleOfTopic: newTopicTitle });
+      res.redirect("/afterLoginSubmit"); // Redirect back to the topics page
+    } catch (error) {
+      console.error("Failed to add new topic", error);
+      res.status(500).send("Error adding new topic");
+    }
   }
 
   run().catch(console.dir);
 });
 
+app.get("/topic/:topicId", function(req, res) {
+  const topicObjectId = req.params.topicId;
+  const client = databaseInstance.getClient();
 
-  const { ObjectId } = require("mongodb");
+  async function run() {
+    try {
+      await client.connect();
+      const database = client.db("MongoTestPub");
+      const topics = database.collection("Topics");
+      const topicMessages = database.collection("TopicMessages");
 
-
-  app.get("/topic/:topicId", function(req, res) {
-    const topicObjectId = req.params.topicId;
-    const client = new MongoClient(uri);
-  
-    async function run() {
-      try {
-        await client.connect();
-        const database = client.db("MongoTestPub");
-        const topics = database.collection("Topics");
-        const topicMessages = database.collection("TopicMessages");
-        
-
-        const topic = await topics.findOne({_id: new ObjectId(topicObjectId)}); 
-        if (!topic) {
-          res.send("Topic not found <br><a href='/afterLoginSubmit'>Back to topics</a>");
-          return;
-        }
-  
-        // Fetch messages that match the topicId
-        const allTopicMessages = await topicMessages.find({ TopicId: new ObjectId(topicObjectId) }).toArray();
-        let topicMessagesHtml = allTopicMessages.map(topicMessage => `<p>${topicMessage.Message}</p>`).join('');
-    
-        // Display the topic and its messages
-
-
-        var topicPageContent = `<h1 style="text-align:center; font-size:50px;">${topic.TitleOfTopic}</h1>`;
-        topicPageContent += `<div style="text-align:center; margin:20px;">`;
-        topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="showTextBox()">Post</button>`;
-        topicPageContent += `</div>`;
-        topicPageContent += `<div id="textBoxDiv" style="display:none; text-align:center; margin:20px;">`;
-        topicPageContent += `<input type='text' id='textBox' placeholder='Enter something to post on the forum' style="padding:5px; width:50%; font-size:30px;">`;
-        topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="submitText()">Submit</button>`;
-        topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
-        topicPageContent += `<div id="submittedText" style="margin-top:20px;"></div>`;
-        topicPageContent += `</div>`;
-        
-        topicPageContent += "<script>";
-        topicPageContent += "function showTextBox() {";
-        topicPageContent += "document.getElementById('textBoxDiv').style.display = 'block';";
-        topicPageContent += "}";
-        topicPageContent += "function submitText() {";
-        topicPageContent += "var submittedText = document.getElementById('textBox').value;";
-        topicPageContent += "var submittedTextDiv = document.getElementById('submittedText');";
-        topicPageContent += "submittedTextDiv.innerHTML += '<p style=\"font-size: 20px; margin: 5px 0;\">' + submittedText + '</p>';";  // Increased font size here
-        topicPageContent += "}";
-        topicPageContent += "</script>";
-        
-        
-        topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="background-color: #4CAF50; color: white; padding: 15px 30px; text-align: center; text-decoration: none; display: inline-block; font-size: 20px; border-radius: 5px; cursor: pointer;">Back to topics</a></p>`;
-
-        
-
-        res.send(topicPageContent);
-
-      } catch (error) {
-        console.error("Failed during topic detail fetch", error);
-        res.status(500).send("Server error: " + error.message);
-      } finally {
-        await client.close();
+      const topic = await topics.findOne({_id: new ObjectId(topicObjectId)});
+      if (!topic) {
+        res.send("Topic not found <br><a href='/afterLoginSubmit'>Back to topics</a>");
+        return;
       }
-    }
-  
-    run().catch(console.dir);
-  });
 
-app.all("/topic/:topicId/messageSubmit", function(res, req){
+      // Fetch messages that match the topicId
+      const allTopicMessages = await topicMessages.find({ TopicId: new ObjectId(topicObjectId) }).toArray();
+      let topicMessagesHtml = allTopicMessages.map(topicMessage => `<p>${topicMessage.Message}</p>`).join('');
+
+      // Display the topic and its messages
+
+      var topicPageContent = `<h1 style="text-align:center; font-size:50px;">${topic.TitleOfTopic}</h1>`;
+      topicPageContent += `<div style="text-align:center; margin:20px;">`;
+      topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="showTextBox()">Post</button>`;
+      topicPageContent += `</div>`;
+      topicPageContent += `<div id="textBoxDiv" style="display:none; text-align:center; margin:20px;">`;
+      topicPageContent += `<input type='text' id='textBox' placeholder='Enter something to post on the forum' style="padding:5px; width:50%; font-size:30px;">`;
+      topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="submitText()">Submit</button>`;
+      topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
+      topicPageContent += `<div id="submittedText" style="margin-top:20px;"></div>`;
+      topicPageContent += `</div>`;
+
+      topicPageContent += "<script>";
+      topicPageContent += "function showTextBox() {";
+      topicPageContent += "document.getElementById('textBoxDiv').style.display = 'block';";
+      topicPageContent += "}";
+      topicPageContent += "function submitText() {";
+      topicPageContent += "var submittedText = document.getElementById('textBox').value;";
+      topicPageContent += "var submittedTextDiv = document.getElementById('submittedText');";
+      topicPageContent += "submittedTextDiv.innerHTML += '<p style=\"font-size: 20px; margin: 5px 0;\">' + submittedText + '</p>';";  // Increased font size here
+      topicPageContent += "}";
+      topicPageContent += "</script>";
+
+      topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="background-color: #4CAF50; color: white; padding: 15px 30px; text-align: center; text-decoration: none; display: inline-block; font-size: 20px; border-radius: 5px; cursor: pointer;">Back to topics</a></p>`;
+      
+      res.send(topicPageContent);
+    } catch (error) {
+      console.error("Failed during topic detail fetch", error);
+      res.status(500).send("Server error: " + error.message);
+    }
+  }
+
+  run().catch(console.dir);
+});
+
+app.all("/topic/:topicId/messageSubmit", function(req, res){
   const topicObjectId = req.params.topicId;
   const messageInserted = req.params.message;
+  const client = databaseInstance.getClient();
 
   async function run(){
     try{
@@ -226,8 +232,8 @@ app.all("/topic/:topicId/messageSubmit", function(res, req){
   run().catch(console.dir);
   // res.redirect("/topic/${topicObjectId}");
 });
-  
-  
+
+
 app.all("/register", function (req, res) {
   var registerString = '<form action="/afterRegisterSubmit" method="POST">';
   registerString += "<h1>REGISTER</h1>";
@@ -243,16 +249,12 @@ app.all("/register", function (req, res) {
 });
 
 app.all("/afterRegisterSubmit", function (req, res) {
-  const client = new MongoClient(uri);
-  var databaseString = "<p>You are now registered into the database!</p>";
-  databaseString += '<a href="/">Go back to homepage</a>';
-  res.send(databaseString);
   const username = req.body.username;
   const password = req.body.password;
+  const client = databaseInstance.getClient();
 
   async function run() {
     try {
-      await client.connect();
       const database = client.db("MongoTestPub");
       const parts = database.collection("Data");
 
@@ -262,6 +264,7 @@ app.all("/afterRegisterSubmit", function (req, res) {
       };
 
       await parts.insertOne(doc);
+      res.send("<p>You are now registered into the database!</p><a href='/'>Go back to homepage</a>");
     } finally {
       await client.close();
     }
@@ -269,11 +272,3 @@ app.all("/afterRegisterSubmit", function (req, res) {
 
   run().catch(console.dir);
 });
-
-
-// Route to write to the database:
-// Access like this:  https://.....app.github.dev/api/mongowrite/partID&54321
-// References:
-// https://www.mongodb.com/docs/drivers/node/current/usage-examples/insertOne
-// https://www.mongodb.com/docs/drivers/node/current/usage-examples/insertMany
-
