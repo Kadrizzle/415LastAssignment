@@ -39,6 +39,9 @@ class Topic {
   constructor() {
     this.observers = [];
   }
+  notify(data) {
+    this.observers.forEach((observer) => observer(data));
+  }
 
   addObserver(observer) {
     this.observers.push(observer);
