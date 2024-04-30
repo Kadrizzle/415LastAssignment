@@ -48,48 +48,52 @@ app.all("/login", function (req, res) {
 });
 
 app.all("/afterLoginSubmit", function (req, res) {
-    const client = new MongoClient(uri);
-    const username = req.body.username;
-    const password = req.body.password;
-  
-    async function run() {
+  const client = new MongoClient(uri);
+  const username = req.body.username;
+  const password = req.body.password;
+
+  async function run() {
       try {
-        await client.connect();
-        const database = client.db("MongoTestPub");
-        const data = database.collection("Data");
-        const topics = database.collection("Topics");
+          await client.connect();
+          const database = client.db("MongoTestPub");
+          const data = database.collection("Data");
+          const topics = database.collection("Topics");
 
-        const user = await data.findOne({
-          username: username,
-          password: password,
-        });
+          const user = await data.findOne({
+              username: username,
+              password: password,
+          });
 
-        if (!user) {
-          res.status(401).send("Unauthorized: Username or password is incorrect");
-          return;
-        }
+          if (!user) {
+              res.status(401).send("Unauthorized: Username or password is incorrect");
+              return;
+          }
 
-        const allTopics = await topics.find({}).toArray(); // Fetch all topics
-        let topicsHtml = allTopics.map(topic => `<li><a href="/topic/${topic._id}">${topic.TitleOfTopic}</a></li>`).join('');
+          const allTopics = await topics.find({}).toArray(); // Fetch all topics
+          let topicsHtml = allTopics.map(topic => `
+              <h1>${topic.TitleOfTopic} Topic</h1>
+              <div style="margin-bottom: 20px;">
+                  <a href="/topic/${topic._id}">
+                      <img src="${topic.TitleOfTopic === 'Coding' ? 'https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg' : 'https://www.hartz.com/wp-content/uploads/2020/03/3270011244_Hartz_Disposable_Dog_Diapers_large_dogs_1300x1300.jpg'}" alt="${topic.TitleOfTopic}" style="max-width: 50%; height: auto; margin-right: 20px;">
+                  </a>
+              </div>
+          `).join('');
 
-        res.cookie("user", username, { maxAge: 86400000, httpOnly: true });
-        res.send(
-          `Welcome ${username} <br>` +
-          `<ul>${topicsHtml}</ul>` +
-          '<p><a href="/">Go back to homepage</a></p>'
-        );
+          res.cookie("user", username, { maxAge: 86400000, httpOnly: true });
+          res.send(
+              `<h1>Topics</h1>` +
+              `${topicsHtml}` +
+              '<p><a href="/">Go back to homepage</a></p>'
+          );
       } catch (error) {
-        console.error("Error during database operation", error);
-        res.status(500).send("Internal Server Error: " + error.message);
+          console.error("Error during database operation", error);
+          res.status(500).send("Internal Server Error: " + error.message);
       } finally {
-        await client.close();
+          await client.close();
       }
-    }
-  
-    run().catch(error => {
-      console.error("Failed to run the server process", error);
-      res.status(500).send("Internal Server Error: " + error.message);
-    });
+  }
+
+  run().catch(console.dir);
 });
 
 
