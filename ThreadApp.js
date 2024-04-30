@@ -9,12 +9,18 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const cookieParser = require("cookie-parser");
+const session = require('express-session');
 app.listen(port);
 console.log("Server started at http://localhost:" + port);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(session({
+  secret: 'secret-key',
+  resave: false,
+  saveUninitialized: false,
+}));
 
 app.get("/", function (req, res) {
   var mycookies = req.cookies;
@@ -102,7 +108,7 @@ app.all("/afterLoginSubmit", function (req, res) {
         const topics = database.collection("Topics");
         const topicMessages = database.collection("TopicMessages");
         
-        // Ensure we convert topicObjectId to an ObjectId
+
         const topic = await topics.findOne({_id: new ObjectId(topicObjectId)}); 
         if (!topic) {
           res.send("Topic not found <br><a href='/afterLoginSubmit'>Back to topics</a>");
@@ -116,6 +122,10 @@ app.all("/afterLoginSubmit", function (req, res) {
         // Display the topic and its messages
         res.send(`<h1>${topic.TitleOfTopic}</h1>
                   ${topicMessagesHtml}
+                  <form action="/topic/${topicObjectId}/messageSubmit" method="POST">
+                     <input type="text" name="message" placeholder="Type something to put on the forum!" required>
+                     <button type="submit">POST</submit>
+                  </form>
                   <p><a href="/afterLoginSubmit">Back to topics</a></p>`);
       } catch (error) {
         console.error("Failed during topic detail fetch", error);
@@ -127,11 +137,32 @@ app.all("/afterLoginSubmit", function (req, res) {
   
     run().catch(console.dir);
   });
-  
-  
-  
-  
 
+app.all("/topic/:topicId/messageSubmit", function(res, req){
+  const topicObjectId = req.params.topicId;
+  const messageInserted = req.params.message;
+
+  async function run(){
+    try{
+      await client.connect();
+      const database = client.db("MongoTestPub");
+      const message = database.collection("TopicMessages");
+
+      const messageToEnterInDatabase = {
+        Message: messageInserted,
+        TopicId: topicObjectId,
+      };
+
+      await message.insertOne(messageToEnterInDatabase);
+    } finally {
+      await client.close();
+    }
+  }
+  run().catch(console.dir);
+  res.redirect("/topic/${topicObjectId}");
+});
+  
+  
 app.all("/register", function (req, res) {
   var registerString = '<form action="/afterRegisterSubmit" method="POST">';
   registerString += "<h1>REGISTER</h1>";
