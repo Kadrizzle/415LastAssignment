@@ -77,7 +77,7 @@ app.all("/afterLoginSubmit", function (req, res) {
 
           res.cookie("user", username, { maxAge: 86400000, httpOnly: true });
           res.send(
-              `<h1>Topics</h1>` +
+              `<h1>Welcome ${username}</h1>` +
               `${topicsHtml}` +
               '<p><a href="/">Go back to homepage</a></p>'
           );
