@@ -71,7 +71,6 @@ app.all("/afterLoginSubmit", function (req, res) {
               password: password,
           });
 
-
           const allTopics = await topics.find({}).toArray(); // Fetch all topics
           let topicsHtml = allTopics.map(topic => `
               <h1>${topic.TitleOfTopic} Topic</h1>
@@ -82,12 +81,20 @@ app.all("/afterLoginSubmit", function (req, res) {
               </div>
           `).join('');
 
+          const addTopicForm = `
+              <h2>Add a New Topic</h2>
+              <form action="/addTopic" method="POST">
+                  <input type="text" name="TitleOfTopic" placeholder="Enter new topic title" required>
+                  <input type="submit" value="Add Topic">
+              </form>
+          `;
+
           res.cookie("user", username, { maxAge: 86400000, httpOnly: true });
           res.send(
               `<h1>Welcome ${username}</h1>` +
               `${topicsHtml}` +
+              `${addTopicForm}` +
               '<p style="text-align: center;"><a href="/" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Go back to homepage</a></p>'
-
           );
       } catch (error) {
           console.error("Error during database operation", error);
@@ -100,6 +107,29 @@ app.all("/afterLoginSubmit", function (req, res) {
   run().catch(console.dir);
 });
 
+app.post("/addTopic", function (req, res) {
+  const client = new MongoClient(uri);
+  const newTopicTitle = req.body.TitleOfTopic;
+
+  async function run() {
+      try {
+          await client.connect();
+          const database = client.db("MongoTestPub");
+          const topics = database.collection("Topics");
+
+          // Insert the new topic into the database
+          await topics.insertOne({ TitleOfTopic: newTopicTitle });
+          res.redirect("/afterLoginSubmit"); // Redirect back to the topics page
+      } catch (error) {
+          console.error("Failed to add new topic", error);
+          res.status(500).send("Error adding new topic");
+      } finally {
+          await client.close();
+      }
+  }
+
+  run().catch(console.dir);
+});
 
 
   const { ObjectId } = require("mongodb");
