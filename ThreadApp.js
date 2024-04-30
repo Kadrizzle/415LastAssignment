@@ -64,10 +64,6 @@ app.all("/afterLoginSubmit", function (req, res) {
               password: password,
           });
 
-          if (!user) {
-              res.status(401).send("Unauthorized: Username or password is incorrect");
-              return;
-          }
 
           const allTopics = await topics.find({}).toArray(); // Fetch all topics
           let topicsHtml = allTopics.map(topic => `
@@ -127,31 +123,30 @@ app.all("/afterLoginSubmit", function (req, res) {
 
 
         var topicPageContent = `<h1 style="text-align:center; font-size:50px;">${topic.TitleOfTopic}</h1>`;
-        topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
         topicPageContent += `<div style="text-align:center; margin:20px;">`;
         topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="showTextBox()">Post</button>`;
         topicPageContent += `</div>`;
         topicPageContent += `<div id="textBoxDiv" style="display:none; text-align:center; margin:20px;">`;
-        topicPageContent += `<input type='text' id='textBox' placeholder='Enter your text' style="padding:5px; width:50%; font-size:30px;">`;
+        topicPageContent += `<input type='text' id='textBox' placeholder='Enter something to post on the forum' style="padding:5px; width:50%; font-size:30px;">`;
+        topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
         topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="submitText()">Submit</button>`;
         topicPageContent += `<div id="submittedText" style="margin-top:20px;"></div>`;
         topicPageContent += `</div>`;
         
-        topicPageContent += `<script>`;
-        topicPageContent += `function showTextBox() {`;
-        topicPageContent += `  document.getElementById('textBoxDiv').style.display = 'block';`;
-        topicPageContent += `}`;
-        topicPageContent += `function submitText() {`;
-        topicPageContent += `  var submittedText = document.getElementById('textBox').value;`;
-        topicPageContent += `  var submittedTextDiv = document.getElementById('submittedText');`;
-        topicPageContent += `  if (submittedText.trim() !== '') {`;
-        topicPageContent += `    submittedTextDiv.innerHTML += '<p style="text-align:left;">' + submittedText + '</p>';`;
-        topicPageContent += `    document.getElementById('textBox').value = '';`; // Clear input after submit
-        topicPageContent += `  }`;
-        topicPageContent += `}`;
-        topicPageContent += `</script>`;
+        topicPageContent += "<script>";
+        topicPageContent += "function showTextBox() {";
+        topicPageContent += "document.getElementById('textBoxDiv').style.display = 'block';";
+        topicPageContent += "}";
+        topicPageContent += "function submitText() {";
+        topicPageContent += "var submittedText = document.getElementById('textBox').value;";
+        topicPageContent += "var submittedTextDiv = document.getElementById('submittedText');";
+        topicPageContent += "submittedTextDiv.innerHTML += '<p style=\"font-size: 20px; margin: 5px 0;\">' + submittedText + '</p>';";  // Increased font size here
+        topicPageContent += "}";
+        topicPageContent += "</script>";
         
-        topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="font-size:16px;">Back to topics</a></p>`;
+        
+        topicPageContent += `<p style="text-align:center;"><a href="/afterLoginSubmit" style="background-color: #4CAF50; color: white; padding: 15px 30px; text-align: center; text-decoration: none; display: inline-block; font-size: 20px; border-radius: 5px; cursor: pointer;">Back to topics</a></p>`;
+
         
 
         res.send(topicPageContent);
