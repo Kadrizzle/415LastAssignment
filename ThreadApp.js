@@ -122,14 +122,14 @@ app.all("/afterLoginSubmit", function (req, res) {
         // Display the topic and its messages
 
 
-        var topicPageContent = `<h1 style="text-align:center; font-size:24px;">${topic.TitleOfTopic}</h1>`;
+        var topicPageContent = `<h1 style="text-align:center; font-size:50px;">${topic.TitleOfTopic}</h1>`;
         topicPageContent += `<div style="text-align:center;">${topicMessagesHtml}</div>`;
         topicPageContent += `<div style="text-align:center; margin:20px;">`;
-        topicPageContent += `<button style="padding:10px 20px; font-size:16px;" onclick="showTextBox()">Post</button>`;
+        topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="showTextBox()">Post</button>`;
         topicPageContent += `</div>`;
         topicPageContent += `<div id="textBoxDiv" style="display:none; text-align:center; margin:20px;">`;
-        topicPageContent += `<input type='text' id='textBox' placeholder='Enter your text' style="padding:5px; width:50%; font-size:16px;">`;
-        topicPageContent += `<button style="padding:10px 20px; font-size:16px;" onclick="submitText()">Submit</button>`;
+        topicPageContent += `<input type='text' id='textBox' placeholder='Enter your text' style="padding:5px; width:50%; font-size:30px;">`;
+        topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="submitText()">Submit</button>`;
         topicPageContent += `<div id="submittedText" style="margin-top:20px;"></div>`;
         topicPageContent += `</div>`;
         
