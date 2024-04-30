@@ -120,13 +120,31 @@ app.all("/afterLoginSubmit", function (req, res) {
         let topicMessagesHtml = allTopicMessages.map(topicMessage => `<p>${topicMessage.Message}</p>`).join('');
     
         // Display the topic and its messages
-        res.send(`<h1>${topic.TitleOfTopic}</h1>
-                  ${topicMessagesHtml}
-                  <form action="/topic/${topicObjectId}/messageSubmit" method="POST">
-                     <input type="text" name="message" placeholder="Type something to put on the forum!" required>
-                     <button type="submit">POST</button>
-                  </form>
-                  <p><a href="/afterLoginSubmit">Back to topics</a></p>`);
+
+
+        const topicPageContent = `<h1>${topic.TitleOfTopic}</h1>`;
+        topicPageContent += `${topicMessagesHtml}`;
+        topicPageContent +="<button onclick='showTextBox()'>Post</button>"; 
+        topicPageContent += "<div id='textBoxDiv' style='display:none;'>";
+        topicPageContent += "<input type='text' id='textBox' placeholder='Enter your text'>";
+        topicPageContent += "<button onclick='submitText()'>Submit</button>";
+        topicPageContent += "<div id='submittedText'></div>"; 
+        topicPageContent += "</div>";
+                
+        topicPageContent += "<script>";
+        topicPageContent += "function showTextBox() {";
+        topicPageContent += "document.getElementById('textBoxDiv').style.display = 'block';";
+        topicPageContent += "}";
+        topicPageContent += "function submitText() {";
+        topicPageContent += "var submittedText = document.getElementById('textBox').value;";
+        topicPageContent += "var submittedTextDiv = document.getElementById('submittedText');";
+        topicPageContent += "submittedTextDiv.innerHTML += '<p>' + submittedText + '</p>';";
+        topicPageContent += "}";
+        topicPageContent += "</script>";
+        topicPageContent += `<p><a href="/afterLoginSubmit">Back to topics</a></p>`;
+
+        res.send(topicPageContent);
+
       } catch (error) {
         console.error("Failed during topic detail fetch", error);
         res.status(500).send("Server error: " + error.message);
