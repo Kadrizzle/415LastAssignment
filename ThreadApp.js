@@ -6,6 +6,8 @@ const session = require("express-session");
 const uri =
   "mongodb+srv://Kadazzle:kadizzleinthehizzle@cluster0.xgaaecl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
+/////////////////////   T7   /////////////////////////
+
 class Database {
   constructor() {
     if (!Database.instance) {
@@ -28,6 +30,8 @@ class Database {
     return this.client;
   }
 }
+
+////////////////////   T6   /////////////////////////
 
 class Observer {
   notify() {}
@@ -146,6 +150,8 @@ app.all("/afterLoginSubmit", function (req, res) {
         )
         .join("");
 
+      ///////////////////////   T3   ///////////////////////////////
+
       const addTopicForm = `
       <div style="text-align: center;">
           <h2>Add a New Topic</h2>
@@ -193,6 +199,8 @@ app.post("/addTopic", function (req, res) {
   run().catch(console.dir);
 });
 
+/////////////////////////   T1   ///////////////////////////////////////
+
 app.get("/topic/:topicId", function (req, res) {
   const topicObjectId = req.params.topicId;
   const client = databaseInstance.getClient();
@@ -222,6 +230,8 @@ app.get("/topic/:topicId", function (req, res) {
 
       // Display the topic and its messages
 
+      ////////////////////   T4   //////////////////////////
+
       var topicPageContent = `<h1 style="text-align:center; font-size:50px;">${topic.TitleOfTopic}</h1>`;
       topicPageContent += `<div style="text-align:center; margin:20px;">`;
       topicPageContent += `<button style="padding:10px 20px; font-size:30px;" onclick="showTextBox()">Post</button>`;
@@ -244,7 +254,7 @@ app.get("/topic/:topicId", function (req, res) {
       topicPageContent +=
         "var submittedTextDiv = document.getElementById('submittedText');";
       topicPageContent +=
-        "submittedTextDiv.innerHTML += '<p style=\"font-size: 20px; margin: 5px 0;\">' + submittedText + '</p>';"; // Increased font size here
+        "submittedTextDiv.innerHTML += '<p style=\"font-size: 20px; margin: 5px 0;\">' + submittedText + '</p>';";
       topicPageContent += "}";
       topicPageContent += "</script>";
 
